@@ -91,7 +91,6 @@ class signin extends Component {
         document.getElementById("fname").innerText="First Name";
         document.getElementById("input_fname").style.border="1.5px solid green";
         document.getElementById("error_message_first_name").innerText="";
-
       }
       else{
         document.getElementById("fname").innerText="";
