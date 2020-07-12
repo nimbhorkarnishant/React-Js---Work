@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
-import Login from './Authentication/login';
 import Navbar from './Authentication/navbar';
 
 import * as serviceWorker from './serviceWorker';
