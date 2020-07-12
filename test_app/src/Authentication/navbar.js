@@ -20,8 +20,8 @@ class navbar extends Component {
                   <img src={Logo} alt="Logo" width="200"/>
                 </div>
                 <div class="tab-bar">
-                  <NavLink to="/"><button class="login_button" id="login_button">Log In</button></NavLink>
-                  <NavLink to="/signin"><button class="signin_button" id="signin_button">Sign In</button></NavLink>
+                  <NavLink to="/"><button class="login_button" id="login_button">Sign In</button></NavLink>
+                  <NavLink to="/signin"><button class="signin_button" id="signin_button">Sign Up</button></NavLink>
                 </div>
                 <Route  exact path="/" component={Login}/>
                 <Route path="/signin" component={Signin}/>

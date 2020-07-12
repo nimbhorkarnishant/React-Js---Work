@@ -10,7 +10,7 @@ import { NavLink } from "react-router-dom";
  
 class Login extends Component {
     componentDidMount(){
-        document.title = "Log-In"
+        document.title = "Sign-In"
         document.getElementById("signin_button").style.backgroundColor="skyblue"
         document.getElementById("login_button").style.backgroundColor="#fd7611"
     }
@@ -23,6 +23,10 @@ class Login extends Component {
             error_message_email:"",
             error_message_password:"",
             isVerified: false,
+            auth_data:{
+                'email':'',
+                'password':''
+            },
     
         }
     }      
@@ -108,7 +112,10 @@ class Login extends Component {
             }
             else{
                 // call Login API
+                this.state.auth_data.email=email;
+                this.state.auth_data.password=pass;
                 alert("you logged in successfully!");
+                console.log("Login-credential--->",this.state.auth_data);
             }
         }
         
@@ -117,13 +124,12 @@ class Login extends Component {
   render() {
     return (
         <form class="login-form" onSubmit={this.handleSubmit}>
-            <h2>Log In</h2>
-            <p>Login to your Account</p>
+            <p>Sign in to your Account</p>
             <label id="email_label" class="form-check-label" for="dropdownCheck"></label>
-            <input id="input_email" type="email" placeholder="Enter your email address" ref="email" onChange={this.handleChange} />
+            <input id="input_email" type="email" placeholder="Email" ref="email" onChange={this.handleChange} />
             <span id="error_message_email" class="error_message">{this.state.error_message_email}</span><br/>
             <label id="password_label" class="form-check-label" for="dropdownCheck"></label>
-            <input id="input_password" type="password" placeholder="Enter your Password" ref="psw" onChange={this.handleChange}/>
+            <input id="input_password" type="password" placeholder="Password" ref="psw" onChange={this.handleChange}/>
             <span id="error_message_password" class="error_message">{this.state.error_message_password}</span>
             {/* <div class="g-recaptcha" data-sitekey="6LcxO6kZAAAAAAHkio7J7grQr7ZkjEA6Wd0xjz7n" verifyCallback={this.verifyCallback}></div> */}
             <Recaptcha

@@ -14,6 +14,8 @@ class Forgot extends React.Component {
        
       this.state={
         isVerified: false,
+        user_data:{'email':'',
+        },
   
       }
   }  
@@ -28,6 +30,8 @@ class Forgot extends React.Component {
                document.getElementById("input_email").style.border="1.5px solid green";
                document.getElementById("error_message_email_id").innerText="";
                // Call API for Reseting password
+               this.state.user_data.email=email;
+               console.log("Forgot_password_data--->",this.state.user_data);
                alert("Instruction is sent to your email");
           }
           else{
