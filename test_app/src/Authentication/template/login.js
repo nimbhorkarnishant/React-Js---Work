@@ -4,6 +4,7 @@ import navbar from "../navbar";
 import '../media/css/login.css';
 import Recaptcha from 'react-recaptcha';
 import { NavLink } from "react-router-dom";
+import axios from 'axios';
 
 
 
@@ -25,7 +26,7 @@ class Login extends Component {
             isVerified: false,
             auth_data:{
                 'email':'',
-                'password':''
+                'passwd':''
             },
     
         }
@@ -113,9 +114,16 @@ class Login extends Component {
             else{
                 // call Login API
                 this.state.auth_data.email=email;
-                this.state.auth_data.password=pass;
-                alert("you logged in successfully!");
+                this.state.auth_data.passwd=pass;
                 console.log("Login-credential--->",this.state.auth_data);
+                axios.post('http://127.0.0.1:5000/login/',this.state.auth_data)
+                .then((res) => {
+                    console.log(res.data)
+                    alert(res.data.Message);
+
+                }).catch((error) => {
+                    console.log(error)
+                });
             }
         }
         

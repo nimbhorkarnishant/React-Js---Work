@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import {findDOMNode} from 'react-dom';
 import '../media/css/signup.css';
 import { NavLink } from "react-router-dom";
-
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
+import { Input } from "reactstrap";
+import axios from 'axios';
 
  
 class signin extends Component {
@@ -19,12 +22,12 @@ class signin extends Component {
       this.state={
         isVerified: false,
         auth_data:{
-          'register_as':'',
-          'first_name':'',
-          'last_name':'',
+          'user_type':'',
+          'fname':'',
+          'lname':'',
           'email':'',
-          'mob_no':'',
-          'password':''
+          'mobile_no':'',
+          'passwd':''
         },
   
       }
@@ -51,35 +54,51 @@ class signin extends Component {
       event.preventDefault();
       var target=event.target;
       var error_span=document.getElementsByTagName("span");
-
+      let mob_no=findDOMNode(this.refs.mob).childNodes[0].value;
       
       for (let i = 2; i < target.length-1; i++) {
           if (target[i].value.length==0) {
             this.state.isVerified=false;
-            error_span[i-1].innerText="This Field is required!";
+            error_span[i-1].innerText="";
             target[i].style.border="1.5px solid red";
           }
       }
+      // if(mob_no.length==3){
+      //   this.state.isVerified=false;
+      //   document.getElementById("error_message_mob_no").innerText="Please enter you mobile number";
+      // }
+      // else{
+      //   document.getElementById("error_message_mob_no").innerText="";
+      // }
 
       if (this.state.isVerified) {
         // Call Registered API
         var ele1=document.getElementById('inlineRadio1');
         var ele2=document.getElementById('inlineRadio2');
         if (ele1.checked){
-          this.state.auth_data.register_as=ele1.value;
+          this.state.auth_data.user_type=ele1.value;
         }
         else if (ele2.checked){
-          this.state.auth_data.register_as=ele2.value;
+          this.state.auth_data.user_type=ele2.value;
         }
         
-        this.state.auth_data.first_name=findDOMNode(this.refs.email).value;
-        this.state.auth_data.last_name=findDOMNode(this.refs.lname).value;
+        this.state.auth_data.fname=findDOMNode(this.refs.fname).value;
+        this.state.auth_data.lname=findDOMNode(this.refs.lname).value;
         this.state.auth_data.email=findDOMNode(this.refs.email).value;
-        this.state.auth_data.mob_no=findDOMNode(this.refs.mob).value;
-        this.state.auth_data.password=findDOMNode(this.refs.psw).value;
+        this.state.auth_data.passwd=findDOMNode(this.refs.psw).value;
+        let mob_no=findDOMNode(this.refs.mob).childNodes[0].value;
+        this.state.auth_data.mobile_no=mob_no;
+
+        // console.log("mobile number--->", mob_no);
         console.log("Register Data--->",this.state.auth_data);
-      //  alert(findDOMNode(this.refs.register_as).value);
-        alert("you registered sucessfully!");
+        axios.post('http://127.0.0.1:5000/registration/',this.state.auth_data)
+        .then((res) => {
+            console.log(res.data)
+            alert(res.data.Message);
+
+        }).catch((error) => {
+            console.log(error)
+        });
       }
     
     };
@@ -88,7 +107,6 @@ class signin extends Component {
       event.preventDefault();
       let email= findDOMNode(this.refs.email).value;
       let pass=findDOMNode(this.refs.psw).value;
-      let mob_no=findDOMNode(this.refs.mob).value;
       let fname=findDOMNode(this.refs.fname).value;
       let lname=findDOMNode(this.refs.lname).value;
 
@@ -116,17 +134,7 @@ class signin extends Component {
       
       if (fname.length>0) {
         document.getElementById("fname").innerText="First Name";
-        if (!/[^a-zA-Z]/.test(fname)){
-          this.state.isVerified=true;
-          document.getElementById("input_fname").style.border="1.5px solid green";
-          document.getElementById("error_message_first_name").innerText="";
-
-        }
-        else{
-          this.state.isVerified=false;
-          document.getElementById("input_fname").style.border="1.5px solid red";
-          document.getElementById("error_message_first_name").innerText="It takes Only Alphabate!";
-        }
+        this.state.isVerified=true;
       }
       else{
         this.state.isVerified=false;
@@ -135,16 +143,7 @@ class signin extends Component {
       
       if (lname.length>0) {
         document.getElementById("lname").innerText="Last Name";
-        if (!/[^a-zA-Z]/.test(lname)){
-          this.state.isVerified=true;
-          document.getElementById("input_lname").style.border="1.5px solid green";
-          document.getElementById("error_message_last_name").innerText="";
-        }
-        else{
-          this.state.isVerified=false;
-          document.getElementById("input_lname").style.border="1.5px solid red";
-          document.getElementById("error_message_last_name").innerText="It takes Only Alphabate!";
-        }
+        this.state.isVerified=true;
       }
       else{
         this.state.isVerified=false;
@@ -156,22 +155,22 @@ class signin extends Component {
         document.getElementById("password").innerText="Password";
         if(pass.length<8){
           document.getElementById("input_password").style.border="1.5px solid red";
-          document.getElementById("error_message_password").innerText="Your password must be at least 8 characters";
+          document.getElementById("error_message_password").innerText="  Your password must be at least 8 characters";
           this.state.isVerified=false;
         }
         else if (pass.search(/[0-9]/) < 0){
           document.getElementById("input_password").style.border="1.5px solid red";
-          document.getElementById("error_message_password").innerText="Your password must contain at least one digit.";
+          document.getElementById("error_message_password").innerText="  Your password must contain at least one digit.";
           this.state.isVerified=false;
         }
         else if(pass.search(/[a-zA-Z]/i) < 0){
           document.getElementById("input_password").style.border="1.5px solid red";
-          document.getElementById("error_message_password").innerText="Your password must contain at least one Alphabate";
+          document.getElementById("error_message_password").innerText="  Your password must contain at least one Alphabate";
           this.state.isVerified=false;
         }
         else if(pass.search(/[-!$%^&*()_+|~=`{}\[\]:\/;<>?,.@#]/i) < 0){
           document.getElementById("input_password").style.border="1.5px solid red";
-          document.getElementById("error_message_password").innerText="Your password must contain at least one special character";
+          document.getElementById("error_message_password").innerText="  Your password must contain at least one special character";
           this.state.isVerified=false;
         }
         else{
@@ -187,26 +186,7 @@ class signin extends Component {
         document.getElementById("input_password").style.border="";
       }
       
-      if (mob_no.length>0) {
-        document.getElementById("mob_label").innerText="Mobile No";
-        var mob_exp = /^[1-9]{1}[0-9]{9}$/;
-        if (mob_exp.test(mob_no)) {
-          this.state.isVerified=true;
-          document.getElementById("input_mob").style.border="1.5px solid green";
-          document.getElementById("error_message_mob_no").innerText="";
-
-
-        }
-        else{
-          this.state.isVerified=false;
-          document.getElementById("input_mob").style.border="1.5px solid red";
-          document.getElementById("error_message_mob_no").innerText="Mobile Number is Invalid!";
-        }
-      }
-      else{
-        this.state.isVerified=false;
-        document.getElementById("mob_label").innerText="";
-      }
+      
       
 
     };
@@ -236,7 +216,7 @@ class signin extends Component {
             <input type="text" id="input_email" placeholder="Email" ref="email" onChange={this.handleChange}/>
             <span id="error_message_email_id" class="error_message"></span><br/>
             <label id="mob_label" class="form-check-label" for="dropdownCheck"></label>
-            <input id="input_mob" type="text" placeholder="Mobile Number" ref="mob" onChange={this.handleChange}/>
+            <PhoneInput value="91" ref="mob" id="input_mob" className="mob_input_class"></PhoneInput>
             <span id="error_message_mob_no" class="error_message"></span><br/>
             <label id="password" class="form-check-label" for="dropdownCheck"></label>
             <input id="input_password" type="password" placeholder="Password" ref="psw" onChange={this.handleChange}/>
