@@ -162,14 +162,14 @@ class Login extends Component {
             </div>
             <hr/>
             <h3>Or log in with</h3>
-            <div class="cta">
-                <button class="facebook">
-                    <em class="fab fa-facebook"></em>
-                    Facebook
-                </button>
-                <button class="google"><em class="fab fa-google"></em>Google</button>
+            <div class="rounded-social-buttons">
+                <a class="social-button facebook" href="http://127.0.0.1:5000/login/facebook"></a>
+                <a class="social-button linkedin" href="http://127.0.0.1:5000/login/linkedin"></a>
+                <a class="social-button google-plus" href="http://127.0.0.1:5000/login/google"></a>
             </div>
+
         </form>
+
     )
   }
 }
