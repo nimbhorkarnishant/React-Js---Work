@@ -21,11 +21,13 @@ class signin extends Component {
        
       this.state={
         isVerified: false,
+        mobile_verified:false,
         auth_data:{
           'user_type':'',
           'fname':'',
           'lname':'',
           'email':'',
+          'country_code':'',
           'mobile_no':'',
           'passwd':''
         },
@@ -59,46 +61,54 @@ class signin extends Component {
       for (let i = 2; i < target.length-1; i++) {
           if (target[i].value.length==0) {
             this.state.isVerified=false;
-            error_span[i-1].innerText="";
+            error_span[i-1].innerText="Field is required !";
             target[i].style.border="1.5px solid red";
           }
       }
-      // if(mob_no.length==3){
-      //   this.state.isVerified=false;
-      //   document.getElementById("error_message_mob_no").innerText="Please enter you mobile number";
-      // }
-      // else{
-      //   document.getElementById("error_message_mob_no").innerText="";
-      // }
+      if(mob_no.length==3){
+        this.state.mobile_verified=false;
+        document.getElementById("error_message_mob_no").innerText="Field is required !";
+      }
+      else{
+        this.state.mobile_verified=true;
+        document.getElementById("error_message_mob_no").innerText="";
+      }
 
       if (this.state.isVerified) {
         // Call Registered API
-        var ele1=document.getElementById('inlineRadio1');
-        var ele2=document.getElementById('inlineRadio2');
-        if (ele1.checked){
-          this.state.auth_data.user_type=ele1.value;
-        }
-        else if (ele2.checked){
-          this.state.auth_data.user_type=ele2.value;
+        if (this.state.mobile_verified){
+          var ele1=document.getElementById('inlineRadio1');
+          var ele2=document.getElementById('inlineRadio2');
+          if (ele1.checked){
+            this.state.auth_data.user_type=ele1.value;
+          }
+          else if (ele2.checked){
+            this.state.auth_data.user_type=ele2.value;
+          }
+          
+          this.state.auth_data.fname=findDOMNode(this.refs.fname).value;
+          this.state.auth_data.lname=findDOMNode(this.refs.lname).value;
+          this.state.auth_data.email=findDOMNode(this.refs.email).value;
+          this.state.auth_data.passwd=findDOMNode(this.refs.psw).value;
+          var mob_code=findDOMNode(this.refs.mob).childNodes[1].childNodes[0].title.split(":")[1].replace("+","").trim();
+          var country_code='+'+mob_code;
+          let mob_no=findDOMNode(this.refs.mob).childNodes[0].value.replace(country_code,"").trim();
+          this.state.auth_data.mobile_no=mob_no;
+          this.state.auth_data.country_code=country_code;
+
+
+          // console.log("mobile number--->", mob_no);
+          console.log("Register Data--->",this.state.auth_data);
+          axios.post('http://127.0.0.1:5000/registration/',this.state.auth_data)
+          .then((res) => {
+              console.log(res.data)
+              alert(res.data.Message);
+
+          }).catch((error) => {
+              console.log(error)
+          });
         }
         
-        this.state.auth_data.fname=findDOMNode(this.refs.fname).value;
-        this.state.auth_data.lname=findDOMNode(this.refs.lname).value;
-        this.state.auth_data.email=findDOMNode(this.refs.email).value;
-        this.state.auth_data.passwd=findDOMNode(this.refs.psw).value;
-        let mob_no=findDOMNode(this.refs.mob).childNodes[0].value;
-        this.state.auth_data.mobile_no=mob_no;
-
-        // console.log("mobile number--->", mob_no);
-        console.log("Register Data--->",this.state.auth_data);
-        axios.post('http://127.0.0.1:5000/registration/',this.state.auth_data)
-        .then((res) => {
-            console.log(res.data)
-            alert(res.data.Message);
-
-        }).catch((error) => {
-            console.log(error)
-        });
       }
     
     };
@@ -133,20 +143,28 @@ class signin extends Component {
       }
       
       if (fname.length>0) {
+        document.getElementById("input_fname").style.border="1.5px solid green";
+        document.getElementById("error_message_first_name").innerText="";
         document.getElementById("fname").innerText="First Name";
         this.state.isVerified=true;
       }
       else{
+        document.getElementById("input_fname").style.border="1.5px solid red";
+        document.getElementById("error_message_first_name").innerText="Field is required !";
         this.state.isVerified=false;
         document.getElementById("fname").innerText="";
       }
       
       if (lname.length>0) {
+        document.getElementById("input_lname").style.border="1.5px solid green";
+        document.getElementById("error_message_last_name").innerText="";
         document.getElementById("lname").innerText="Last Name";
         this.state.isVerified=true;
       }
       else{
         this.state.isVerified=false;
+        document.getElementById("input_lname").style.border="1.5px solid red";
+        document.getElementById("error_message_last_name").innerText="Field is required !";
         document.getElementById("lname").innerText="";
       }
 
@@ -215,12 +233,12 @@ class signin extends Component {
             <label id="email" class="form-check-label" for="dropdownCheck"></label>
             <input type="text" id="input_email" placeholder="Email" ref="email" onChange={this.handleChange}/>
             <span id="error_message_email_id" class="error_message"></span><br/>
-            <label id="mob_label" class="form-check-label" for="dropdownCheck"></label>
-            <PhoneInput value="91" ref="mob" id="input_mob" className="mob_input_class"></PhoneInput>
-            <span id="error_message_mob_no" class="error_message"></span><br/>
             <label id="password" class="form-check-label" for="dropdownCheck"></label>
             <input id="input_password" type="password" placeholder="Password" ref="psw" onChange={this.handleChange}/>
             <span id="error_message_password" class="error_message"></span><br/>
+            <label id="mob_label" class="form-check-label" for="dropdownCheck"></label>
+            <PhoneInput value="91" ref="mob" id="input_mob"></PhoneInput>
+            <span id="error_message_mob_no" class="error_message"></span><br/>
             <div  id="check-term">
                 <p>By registering here to indicate that you have read and agree to the <NavLink to="#">terms and condition</NavLink> of the Pareegh Private Limited.</p>
             </div>
